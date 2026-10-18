@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="Global DDoS Radar">
+  <defs>
+    <radialGradient id="glow" cx="78%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#0e7490" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#082f49" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#030407" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="arcA" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="arcB" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2"/>
+      <stop offset="55%" stop-color="#93c5fd" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.2"/>
+    </linearGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1.4" cy="1.4" r="1.1" fill="#38bdf8" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="360" fill="#030407"/>
+  <rect width="1280" height="360" fill="url(#dots)"/>
+  <rect width="1280" height="360" fill="url(#glow)"/>
+
+  <g transform="translate(985, 180)" aria-hidden="true">
+    <circle r="150" fill="none" stroke="#67e8f9" stroke-opacity="0.30" stroke-width="1.4"/>
+    <circle r="150" fill="none" stroke="#0ea5e9" stroke-opacity="0.10" stroke-width="10"/>
+    <ellipse rx="150" ry="58" fill="none" stroke="#67e8f9" stroke-opacity="0.20" stroke-width="1"/>
+    <ellipse rx="150" ry="106" fill="none" stroke="#67e8f9" stroke-opacity="0.12" stroke-width="1"/>
+    <ellipse rx="58" ry="150" fill="none" stroke="#67e8f9" stroke-opacity="0.16" stroke-width="1"/>
+    <ellipse rx="106" ry="150" fill="none" stroke="#67e8f9" stroke-opacity="0.10" stroke-width="1"/>
+
+    <path d="M -118 -58 Q 0 -152 98 -66" fill="none" stroke="url(#arcA)" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M -126 30 Q 10 -6 128 44" fill="none" stroke="url(#arcB)" stroke-width="2.0" stroke-linecap="round"/>
+    <path d="M -84 96 Q 22 132 104 84" fill="none" stroke="url(#arcA)" stroke-width="1.7" stroke-linecap="round" stroke-opacity="0.75"/>
+
+    <circle cx="-118" cy="-58" r="5.5" fill="#a5f3fc"/>
+    <circle cx="98" cy="-66" r="5.5" fill="#67e8f9"/>
+    <circle cx="-126" cy="30" r="5" fill="#93c5fd"/>
+    <circle cx="128" cy="44" r="5" fill="#3b82f6"/>
+    <circle cx="-84" cy="96" r="4.5" fill="#a5f3fc"/>
+    <circle cx="104" cy="84" r="4.5" fill="#22d3ee"/>
+  </g>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+    <text x="72" y="150" fill="#9BA7B8" font-size="15" letter-spacing="6" font-weight="600" font-family="ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace">READ-ONLY TELEMETRY · HONEST BY DESIGN</text>
+    <text x="72" y="216" fill="#F3F6FC" font-size="54" font-weight="800" letter-spacing="1.5">GLOBAL DDoS RADAR</text>
+    <text x="72" y="258" fill="#9BA7B8" font-size="18">Country-level Cloudflare Radar attack telemetry on an interactive 3D globe.</text>
+    <text x="72" y="286" fill="#9BA7B8" font-size="18">Aggregates, never guesses. Not real-time, and it says so.</text>
+
+    <g transform="translate(72, 312)">
+      <rect x="0" y="0" width="150" height="26" rx="13" fill="#0b1220" stroke="#164e63"/>
+      <circle cx="16" cy="13" r="4" fill="#22d3ee"/>
+      <text x="30" y="18" fill="#a5f3fc" font-size="12.5" font-weight="600">L7 + L3 layers</text>
+      <rect x="164" y="0" width="168" height="26" rx="13" fill="#0b1220" stroke="#1e3a8a"/>
+      <circle cx="180" cy="13" r="4" fill="#3b82f6"/>
+      <text x="194" y="18" fill="#bfdbfe" font-size="12.5" font-weight="600">server-side proxy</text>
+      <rect x="346" y="0" width="196" height="26" rx="13" fill="#0b1220" stroke="#4c1d95"/>
+      <circle cx="362" cy="13" r="4" fill="#a78bfa"/>
+      <text x="376" y="18" fill="#ddd6fe" font-size="12.5" font-weight="600">labelled demo mode</text>
+    </g>
+  </g>
+</svg>
