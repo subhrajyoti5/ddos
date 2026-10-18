@@ -1,0 +1,41 @@
+{
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result": {
+    "top_0": [
+      {
+        "originCountryName": "United States",
+        "originCountryAlpha2": "US",
+        "targetCountryName": "Canada",
+        "targetCountryAlpha2": "CA",
+        "value": "8.42"
+      },
+      {
+        "originCountryName": "China",
+        "originCountryAlpha2": "CN",
+        "targetCountryName": "Germany",
+        "targetCountryAlpha2": "DE",
+        "value": "6.15"
+      },
+      {
+        "originCountryName": "Brazil",
+        "originCountryAlpha2": "BR",
+        "targetCountryName": "France",
+        "targetCountryAlpha2": "FR",
+        "value": "4.88"
+      }
+    ],
+    "meta": {
+      "dateRange": [
+        {
+          "startTime": "2026-10-17T00:00:00Z",
+          "endTime": "2026-10-18T00:00:00Z"
+        }
+      ],
+      "lastUpdated": "2026-10-18T00:04:00Z",
+      "normalization": "PERCENTAGE",
+      "units": [{ "name": "requests", "value": "requests" }]
+    }
+  }
+}

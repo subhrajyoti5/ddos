@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result": {
+    "top_0": [
+      {
+        "originCountryName": "Russia",
+        "originCountryAlpha2": "RU",
+        "value": "12.35"
+      },
+      {
+        "originCountryName": "United States",
+        "originCountryAlpha2": "US",
+        "value": "9.78"
+      },
+      {
+        "originCountryName": "Vietnam",
+        "originCountryAlpha2": "VN",
+        "value": "5.41"
+      }
+    ],
+    "meta": {
+      "dateRange": [
+        {
+          "startTime": "2026-10-17T00:00:00Z",
+          "endTime": "2026-10-18T00:00:00Z"
+        }
+      ],
+      "lastUpdated": "2026-10-18T00:04:00Z",
+      "normalization": "PERCENTAGE",
+      "units": [{ "name": "attacks", "value": "attacks" }]
+    }
+  }
+}
