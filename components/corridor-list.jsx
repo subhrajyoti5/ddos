@@ -3,30 +3,16 @@
 /**
  * Corridor list (PRD FR-04). Every row is a real button: focusable, labelled
  * with its full reading, and pressed/selected state is exposed via
- * `aria-pressed`. Bars are decorative emphasis (they encode the same value as
- * the adjacent label), so they are hidden from assistive technology.
+ * `aria-pressed`.
  *
  * Rows always carry their own labels, so nothing here becomes meaningless if
- * the globe fails to render.
+ * the globe fails to render. Visually the list is deliberately quiet: hairline
+ * dividers only, no boxes, no chrome.
  */
-import { useMemo } from "react";
-import { IconArrowRight, IconInfo } from "@/components/icons";
-import { formatUtcTimestamp } from "@/lib/format";
-import { LAYER_DETAILS, RANGE_DETAILS } from "@/lib/radar-config";
+import { LAYER_DETAILS } from "@/lib/radar-config";
 
-function CodeChip({ code }) {
-  if (!code) return null;
-  return (
-    <span className="rounded border border-white/10 bg-white/[0.04] px-1 py-px font-mono text-[10px] font-semibold tracking-wide text-[#9BA7B8]">
-      {code}
-    </span>
-  );
-}
-
-function Row({ corridor, maxValue, selected, onSelect, layerDetail }) {
-  const { rank, origin, target, value, valueLabel, mode, hasArc } = corridor;
-  const barWidth =
-    typeof value === "number" && maxValue > 0 ? Math.max(4, Math.round((value / maxValue) * 100)) : 0;
+function Row({ corridor, selected, onSelect, layerDetail }) {
+  const { rank, origin, target, valueLabel, mode, hasArc } = corridor;
 
   const targetPhrase = target ? ` to ${target.name}${target.code ? ` (${target.code})` : ""}` : "";
   const modePhrase = mode === "origin" ? " reported origin location" : "";
@@ -42,48 +28,50 @@ function Row({ corridor, maxValue, selected, onSelect, layerDetail }) {
         aria-pressed={selected}
         aria-label={ariaLabel}
         title={ariaLabel}
-        className={`group flex w-full items-center gap-3 rounded-md border px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 ${
-          selected
-            ? "border-cyan-300/50 bg-cyan-400/[0.08]"
-            : "border-white/[0.06] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.05]"
+        className={`group flex w-full items-baseline gap-4 py-3 text-left transition-colors focus-visible:bg-white/[0.03] focus-visible:outline-none ${
+          selected ? "bg-cyan-400/[0.05]" : "hover:bg-white/[0.02]"
         }`}
       >
         <span
           aria-hidden="true"
-          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded border font-mono text-[11px] font-semibold ${
-            selected
-              ? "border-cyan-300/50 text-cyan-200"
-              : "border-white/10 text-[#9BA7B8] group-hover:text-[#F3F6FC]"
+          className={`w-6 shrink-0 font-mono text-[11px] ${
+            selected ? "text-cyan-300" : "text-white/25 group-hover:text-white/40"
           }`}
         >
           {rank}
         </span>
 
-        <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm leading-tight">
-            <span className="truncate font-medium text-[#F3F6FC]">{origin.name}</span>
-            <CodeChip code={origin.code} />
-            {target ? (
-              <>
-                <IconArrowRight className="h-3.5 w-3.5 shrink-0 text-cyan-400/80" />
-                <span className="truncate text-[13px] text-[#C7D2E0]">{target.name}</span>
-                <CodeChip code={target.code} />
-              </>
-            ) : (
-              <span className="rounded border border-white/10 px-1 py-px text-[10px] uppercase tracking-wide text-[#9BA7B8]">
-                {layerDetail?.short ?? "L3"} origin
+        <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 text-sm leading-snug">
+          <span className={`truncate ${selected ? "text-cyan-100" : "text-[#F3F6FC]"}`}>
+            {origin.name}
+          </span>
+          {origin.code ? (
+            <span className="font-mono text-[10px] text-white/25">{origin.code}</span>
+          ) : null}
+          {target ? (
+            <>
+              <span aria-hidden="true" className="text-white/25">
+                &#8594;
               </span>
-            )}
-          </span>
-          <span aria-hidden="true" className="h-1 w-full max-w-[220px] overflow-hidden rounded-full bg-white/[0.06]">
-            <span
-              className={`block h-full rounded-full ${selected ? "bg-cyan-200" : "bg-cyan-400/70"}`}
-              style={{ width: `${barWidth}%` }}
-            />
-          </span>
+              <span className="truncate text-white/60 group-hover:text-white/80">
+                {target.name}
+              </span>
+              {target.code ? (
+                <span className="font-mono text-[10px] text-white/25">{target.code}</span>
+              ) : null}
+            </>
+          ) : (
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/25">
+              {layerDetail?.short ?? "L3"} origin
+            </span>
+          )}
         </span>
 
-        <span className="shrink-0 font-mono text-sm font-semibold tabular-nums text-[#F3F6FC]">
+        <span
+          className={`shrink-0 font-mono text-sm tabular-nums ${
+            selected ? "text-cyan-200" : "text-white/80"
+          }`}
+        >
           {valueLabel}
         </span>
       </button>
@@ -91,35 +79,15 @@ function Row({ corridor, maxValue, selected, onSelect, layerDetail }) {
   );
 }
 
-export default function CorridorList({
-  corridors,
-  metric,
-  layer,
-  range,
-  selectedRank,
-  onSelect,
-  fetchedAt,
-}) {
+export default function CorridorList({ corridors, layer, selectedRank, onSelect }) {
   const layerDetail = LAYER_DETAILS[layer] ?? LAYER_DETAILS.l7;
-  const rangeDetail = RANGE_DETAILS[range] ?? RANGE_DETAILS["1d"];
-
-  const maxValue = useMemo(() => {
-    const values = corridors
-      .map((corridor) => corridor.value)
-      .filter((value) => typeof value === "number" && Number.isFinite(value));
-    return values.length > 0 ? Math.max(...values) : 0;
-  }, [corridors]);
-
-  const selected = useMemo(
-    () => corridors.find((corridor) => corridor.rank === selectedRank) ?? null,
-    [corridors, selectedRank],
-  );
+  const selected = corridors.find((corridor) => corridor.rank === selectedRank) ?? null;
 
   if (corridors.length === 0) {
     return (
-      <div className="rounded-md border border-white/[0.07] bg-white/[0.02] px-4 py-6 text-center">
-        <p className="text-sm font-medium text-[#F3F6FC]">No corridors returned for this selection.</p>
-        <p className="mt-1 text-xs leading-relaxed text-[#9BA7B8]">
+      <div className="py-14 text-center">
+        <p className="text-sm text-[#F3F6FC]">No corridors returned for this selection.</p>
+        <p className="mx-auto mt-1.5 max-w-sm text-xs leading-relaxed text-white/35">
           Try the 7-day window, or switch the layer. Network (L3) currently reports origin locations
           without target countries.
         </p>
@@ -128,13 +96,12 @@ export default function CorridorList({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <ol className="flex flex-col gap-2" aria-label="Top corridors, ranked">
+    <div className="flex flex-col">
+      <ol className="divide-y divide-white/[0.07]" aria-label="Top corridors, ranked">
         {corridors.map((corridor) => (
           <Row
             key={`${corridor.rank}-${corridor.origin.code ?? corridor.origin.name}`}
             corridor={corridor}
-            maxValue={maxValue}
             selected={corridor.rank === selectedRank}
             onSelect={onSelect}
             layerDetail={layerDetail}
@@ -144,66 +111,18 @@ export default function CorridorList({
 
       {selected ? (
         <div
-          className="rounded-md border border-cyan-300/25 bg-cyan-400/[0.04] px-3 py-3"
           role="region"
           aria-label={`Details for rank ${selected.rank}`}
+          className="border-t border-white/[0.07] py-3"
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="font-mono text-[10px] tracking-[0.18em] text-[#9BA7B8]">
-                RANK {selected.rank} DETAIL
-              </p>
-              <p className="mt-1 text-sm font-semibold text-[#F3F6FC]">
-                {selected.origin.name}
-                {selected.origin.code ? ` (${selected.origin.code})` : ""}
-                {selected.target
-                  ? ` \u2192 ${selected.target.name}${selected.target.code ? ` (${selected.target.code})` : ""}`
-                  : " \u00b7 origin location"}
-              </p>
-            </div>
-            <p className="shrink-0 font-mono text-sm font-semibold text-cyan-200">{selected.valueLabel}</p>
-          </div>
-
-          <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-2 text-[11px] sm:grid-cols-2">
-            <div className="flex flex-col">
-              <dt className="text-[#9BA7B8]">Metric</dt>
-              <dd className="text-[#C7D2E0]">{metric?.label ?? layerDetail.metricLabel}</dd>
-            </div>
-            <div className="flex flex-col">
-              <dt className="text-[#9BA7B8]">Layer</dt>
-              <dd className="text-[#C7D2E0]">{layerDetail.label}</dd>
-            </div>
-            <div className="flex flex-col">
-              <dt className="text-[#9BA7B8]">Window</dt>
-              <dd className="text-[#C7D2E0]">{rangeDetail.label}</dd>
-            </div>
-            <div className="flex flex-col">
-              <dt className="text-[#9BA7B8]">Location source</dt>
-              <dd className="text-[#C7D2E0]">
-                {selected.target
-                  ? "Country centroids for both endpoints (world-countries dataset)"
-                  : "Country centroid for the reported origin (world-countries dataset)"}
-              </dd>
-            </div>
-            <div className="flex flex-col sm:col-span-2">
-              <dt className="text-[#9BA7B8]">Fetched at</dt>
-              <dd className="text-[#C7D2E0]">{formatUtcTimestamp(fetchedAt) ?? "\u2014"}</dd>
-            </div>
-          </dl>
-
-          <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-relaxed text-[#9BA7B8]">
-            <IconInfo className="mt-px h-3.5 w-3.5 shrink-0 text-cyan-300/80" />
-            <span>
-              Country-level aggregate, not an individual attack event.
-              {selected.target
-                ? " Origin and target are both approximate country locations."
-                : " This is a reported origin location; the endpoint does not return target countries."}
-            </span>
+          <p className="text-[11px] leading-relaxed text-white/35">
+            Country-level aggregate, not an individual attack event.{" "}
+            {selected.target
+              ? "Origin and target are approximate country locations."
+              : "Reported origin location; this endpoint does not return target countries."}
           </p>
         </div>
-      ) : (
-        <p className="text-[11px] leading-relaxed text-[#9BA7B8]">{layerDetail.selectionHint}</p>
-      )}
+      ) : null}
     </div>
   );
 }

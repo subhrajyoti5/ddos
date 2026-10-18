@@ -3,15 +3,15 @@
 /**
  * Layer / window / limit selectors plus the globe rotation toggle.
  *
- * The selectors are proper radiogroups: arrow keys move the selection, Home and
- * End jump to the ends, and only the selected item is in the tab order. Each
- * control carries a plain-language tooltip explaining the option.
+ * Rendered as one quiet line of text: no boxes, no legends. The selectors keep
+ * radiogroup semantics (arrow keys move the selection, Home and End jump to the
+ * ends, only the selected item is in the tab order) and each control carries a
+ * plain-language tooltip explaining the option.
  */
-import { useId, useRef } from "react";
+import { useRef } from "react";
 import { IconPause, IconPlay } from "@/components/icons";
 
-function SegmentedControl({ label, hint, options, value, onChange }) {
-  const legendId = useId();
+function SegmentedControl({ label, options, value, onChange }) {
   const refs = useRef([]);
   const selectedIndex = options.findIndex((option) => option.value === value);
 
@@ -38,58 +38,53 @@ function SegmentedControl({ label, hint, options, value, onChange }) {
   };
 
   return (
-    <fieldset className="flex min-w-0 flex-col gap-1.5">
-      <legend
-        id={legendId}
-        className="font-mono text-[10px] font-medium tracking-[0.18em] text-[#9BA7B8]"
-      >
-        {label}
-      </legend>
-      <div
-        role="radiogroup"
-        aria-labelledby={legendId}
-        onKeyDown={onKeyDown}
-        className="flex flex-wrap gap-1 rounded-md border border-white/[0.08] bg-[#080C14] p-1"
-      >
-        {options.map((option, index) => {
-          const selected = option.value === value;
-          return (
-            <button
-              key={String(option.value)}
-              ref={(element) => {
-                refs.current[index] = element;
-              }}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              tabIndex={selected ? 0 : -1}
-              title={option.title}
-              onClick={() => onChange(option.value)}
-              className={`rounded px-2.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 ${
-                selected
-                  ? "bg-cyan-400/15 text-cyan-100 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.35)]"
-                  : "text-[#9BA7B8] hover:bg-white/[0.05] hover:text-[#F3F6FC]"
-              }`}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-      {hint ? <p className="max-w-[220px] text-[11px] leading-relaxed text-[#9BA7B8]">{hint}</p> : null}
-    </fieldset>
+    <div
+      role="radiogroup"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className="flex items-center gap-3"
+    >
+      {options.map((option, index) => {
+        const selected = option.value === value;
+        return (
+          <button
+            key={String(option.value)}
+            ref={(element) => {
+              refs.current[index] = element;
+            }}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            tabIndex={selected ? 0 : -1}
+            title={option.title}
+            onClick={() => onChange(option.value)}
+            className={`font-mono text-[11px] tracking-[0.08em] transition-colors focus-visible:text-[#F3F6FC] focus-visible:outline-none ${
+              selected
+                ? "text-[#F3F6FC] underline decoration-cyan-300/60 underline-offset-4"
+                : "text-white/30 hover:text-white/70"
+            }`}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
   );
+}
+
+function Divider() {
+  return <span aria-hidden="true" className="h-3 w-px bg-white/[0.1]" />;
 }
 
 const LAYER_OPTIONS = [
   {
     value: "l7",
-    label: "Application (L7)",
+    label: "L7",
     title: "Application-layer attacks: reported origin \u2192 target country corridors.",
   },
   {
     value: "l3",
-    label: "Network (L3)",
+    label: "L3",
     title:
       "Network-layer attacks. Cloudflare reports origin locations only (no target country), and attributes them to the Cloudflare data-center location.",
   },
@@ -117,41 +112,42 @@ export default function LayerSwitcher({
   onToggleRotation,
 }) {
   return (
-    <div className="flex flex-wrap items-start gap-x-6 gap-y-4">
-      <SegmentedControl
-        label="LAYER"
-        options={LAYER_OPTIONS}
-        value={layer}
-        onChange={onLayerChange}
-        hint={layer === "l3" ? "Origin locations only, as reported by this endpoint." : null}
-      />
-      <SegmentedControl
-        label="WINDOW"
-        options={RANGE_OPTIONS}
-        value={range}
-        onChange={onRangeChange}
-      />
-      <SegmentedControl
-        label="ROWS"
-        options={LIMIT_OPTIONS}
-        value={limit}
-        onChange={onLimitChange}
-      />
-      <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[10px] font-medium tracking-[0.18em] text-[#9BA7B8]">
-          GLOBE
-        </span>
-        <button
-          type="button"
-          aria-pressed={rotationPaused}
-          onClick={() => onToggleRotation(!rotationPaused)}
-          title={rotationPaused ? "Resume automatic globe rotation." : "Pause automatic globe rotation."}
-          className="flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#080C14] px-2.5 py-1.5 text-xs font-medium text-[#9BA7B8] transition-colors hover:bg-white/[0.05] hover:text-[#F3F6FC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70"
-        >
-          {rotationPaused ? <IconPlay className="h-3.5 w-3.5" /> : <IconPause className="h-3.5 w-3.5" />}
-          {rotationPaused ? "Resume rotation" : "Pause rotation"}
-        </button>
+    <div className="flex items-center justify-between gap-6">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <SegmentedControl
+          label="Attack layer"
+          options={LAYER_OPTIONS}
+          value={layer}
+          onChange={onLayerChange}
+        />
+        <Divider />
+        <SegmentedControl
+          label="Observation window"
+          options={RANGE_OPTIONS}
+          value={range}
+          onChange={onRangeChange}
+        />
+        <Divider />
+        <SegmentedControl
+          label="Rows shown"
+          options={LIMIT_OPTIONS}
+          value={limit}
+          onChange={onLimitChange}
+        />
       </div>
+
+      <button
+        type="button"
+        aria-pressed={rotationPaused}
+        aria-label={rotationPaused ? "Resume globe rotation" : "Pause globe rotation"}
+        title={
+          rotationPaused ? "Resume automatic globe rotation." : "Pause automatic globe rotation."
+        }
+        onClick={() => onToggleRotation(!rotationPaused)}
+        className="shrink-0 text-white/30 transition-colors hover:text-white/70 focus-visible:text-[#F3F6FC] focus-visible:outline-none"
+      >
+        {rotationPaused ? <IconPlay className="h-3.5 w-3.5" /> : <IconPause className="h-3.5 w-3.5" />}
+      </button>
     </div>
   );
 }
